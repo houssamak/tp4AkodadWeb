@@ -50,6 +50,16 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-google-genai</artifactId>
         </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-document-parser-apache-tika</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-embeddings-bge-small-en-v15-q</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

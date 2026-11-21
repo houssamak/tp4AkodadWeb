@@ -6,18 +6,23 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.google.genai.GoogleGenAiChatModel;
 import dev.langchain4j.service.AiServices;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 import java.io.Serializable;
 
 @Dependent
 public class LlmClient implements Serializable {
 
-    private String systemRole;
     private Assistant assistant;
     private ChatMemory chatMemory;
 
-    public LlmClient() {
+    @Inject
+    private RagDocuments ragDocuments;
+
+    @PostConstruct
+    void initialiser() {
         String apiKey = System.getenv("GEMINI_KEY");
 
         chatMemory = MessageWindowChatMemory.withMaxMessages(20);
@@ -30,11 +35,11 @@ public class LlmClient implements Serializable {
         assistant = AiServices.builder(Assistant.class)
                 .chatModel(model)
                 .chatMemory(chatMemory)
+                .retrievalAugmentor(ragDocuments.retrievalAugmentor())
                 .build();
     }
 
     public void setSystemRole(String systemRole) {
-        this.systemRole = systemRole;
         chatMemory.clear();
 
         if (systemRole != null && !systemRole.isBlank()) {
