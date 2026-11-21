@@ -35,7 +35,7 @@ public class LlmClient implements Serializable {
         assistant = AiServices.builder(Assistant.class)
                 .chatModel(model)
                 .chatMemory(chatMemory)
-                .retrievalAugmentor(ragDocuments.retrievalAugmentor())
+                .retrievalAugmentor(ragDocuments.retrievalAugmentor(model))
                 .build();
     }
 
