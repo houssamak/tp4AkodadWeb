@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer;
+
 
 @ApplicationScoped
 public class RagDocuments {
@@ -50,7 +52,18 @@ public class RagDocuments {
                 "Livre de recettes NEFF : plats, ingrédients, quantités, préparation "
                         + "et cuisson. Il contient notamment la recette des croquettes de poulet.");
 
+        var transformer = new CompressingQueryTransformer(model);
+
         return DefaultRetrievalAugmentor.builder()
+                .queryTransformer(query -> {
+                    var requetes = transformer.transform(query);
+                    for (var requete : requetes) {
+                        if (!requete.text().equals(query.text())) {
+                            LOGGER.info(() -> "RAG - Requete reformulee : " + requete.text());
+                        }
+                    }
+                    return requetes;
+                })
                 .queryRouter(new LanguageModelQueryRouter(model, descriptions))
                 .build();
     }
